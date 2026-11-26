@@ -254,7 +254,31 @@ export default {
       lm([6005, 1547], 0, 0, 30, 22, 101, 5, 0, 1.4); light(6005, 104, 1547, cRED, 3, 1.3, 3);
       lm([4650, 1870], 0, 0, 36, 28, 168, 6, 0, 1.5, 1.05); light(4650, 171, 1870, cRED, 4, 1.4, 3);
       lm(HRAM, 0, 0, 80, 80, 40, 8, 0, 1, 0); lm(HRAM, 0, 0, 42, 42, 16, 8, 40, 1, 0); lm(HRAM, 0, 0, 34, 34, 9, 8, 56, 1, .785); lm(HRAM, 0, 0, 24, 24, 8, 8, 65, 1, 0); lm(HRAM, 0, 0, 1.6, 1.6, 9, 8, 73, 1, 0);
-      lm([3045, 2905], 0, 0, 9, 9, 200, 7, 0, 1, 0); light(3045, 203, 2905, cRED, 4, 1.4, 3); for (let k = 1; k < 9; k++) light(3045 - 12 * k, 200 - 20 * k, 2905 - 62 * k + 500 * 0, cWHITE, .9, 1.1, 1);
+      // ---- three Belgrade landmarks people recognise at night: lit so the eye finds them (kind 5 = always lit)
+      { // Most na Adi: the single white pylon and its fan of stays, the lit deck across the river
+        const PY = [3045, 2905], ADA = PTS(ROADS.find(r => r[0] === 'Most na Adi')[2]);
+        lm(PY, 0, 0, 11, 11, 200, 9, 0, 1, 0); lm(PY, 0, 0, 4, 4, 14, 9, 200, 1, 0); light(PY[0], 216, PY[1], cRED, 5, 1.6, 3);
+        for (let i = 0; i + 1 < ADA.length; i++) { const [ax, az] = ADA[i], [bx, bz] = ADA[i + 1], L = Math.hypot(bx - ax, bz - az);
+          for (let a = 0; a < L; a += 22) light(ax + (bx - ax) * a / L, 12, az + (bz - az) * a / L, cWHITE, 2.6, 1.6, 5); }
+        const dir = [ADA[ADA.length - 1][0] - ADA[0][0], ADA[ADA.length - 1][1] - ADA[0][1]], dl = Math.hypot(dir[0], dir[1]); dir[0] /= dl; dir[1] /= dl;
+        for (const sd of [-1, 1]) for (let c = 1; c <= 10; c++) { const dd = 40 + c * 34, tx = PY[0] + dir[0] * dd * sd, tz = PY[1] + dir[1] * dd * sd, ty = 190 - c * 9;
+          for (let k = 1; k <= 9; k++) { const f = k / 10; light(PY[0] + (tx - PY[0]) * f, ty + (12 - ty) * f, PY[1] + (tz - PY[1]) * f, cWHITE, 1.25, 1.05, 5); } }
+      }
+      { // Hram Svetog Save: floodlit white walls, the dome, the gilded cross, a ring of floodlights
+        for (let k = 0; k < 24; k++) { const a = k / 24 * Math.PI * 2; light(HRAM[0] + Math.cos(a) * 62, 3, HRAM[1] + Math.sin(a) * 62, cWARM, 4.2, 2.4, 5); }
+        light(HRAM[0], 84, HRAM[1], [1, .82, .45], 9, 2.6, 5);
+      }
+      { // Kalemegdan: the fortress on its ridge above the confluence; walls and bastions in warm floodlight, the Pobednik
+        const KAL = [4960, -200], KA = -.65, c = Math.cos(KA), s2 = Math.sin(KA), P = (al, la) => [KAL[0] + c * al - s2 * la, KAL[1] + s2 * al + c * la];
+        const ring = [[-230, -120], [-60, -150], [120, -140], [240, -80], [250, 60], [120, 130], [-80, 140], [-230, 90]];
+        for (let i = 0; i < ring.length; i++) { const A2 = ring[i], B2 = ring[(i + 1) % ring.length], mx = (A2[0] + B2[0]) / 2, mz = (A2[1] + B2[1]) / 2, L = Math.hypot(B2[0] - A2[0], B2[1] - A2[1]), an = KA + Math.atan2(B2[1] - A2[1], B2[0] - A2[0]);
+          const [wx, wz] = P(mx, mz); add(wx, wz, L + 8, 10, 20, 10, { c: Math.cos(an), s: Math.sin(an), lit: 1, imp: 1e9 });
+          const [bx, bz] = P(A2[0], A2[1]); add(bx, bz, 30, 30, 24, 10, { c: Math.cos(an + .785), s: Math.sin(an + .785), lit: 1, imp: 1e9 }); // bastion
+          for (let a = 0; a < L; a += 16) { const f = a / L, [lx, lz] = P(A2[0] + (B2[0] - A2[0]) * f, A2[1] + (B2[1] - A2[1]) * f); light(lx, 2, lz, cWARM, 3.6, 2.2, 5); } }
+        const [gx2, gz2] = P(-80, -30); add(gx2, gz2, 40, 26, 22, 10, { c, s: s2, lit: 1, imp: 1e9 }); // the clock tower gate
+        const [px2, pz2] = P(-262, -10); add(px2, pz2, 9, 9, 14, 10, { c, s: s2, lit: 1, imp: 1e9 }); add(px2, pz2, 3.4, 3.4, 20, 8, { y: 14, c, s: s2, lit: 1, imp: 1e9 }); // Pobednik on its column
+        light(px2, 38, pz2, [1, .86, .6], 5, 1.9, 5);
+      }
       light(0, SHOP_Y, 0, [1, .62, .2], 1, 4.2, 2); // the shop
 
       // ---- quays: lamps along both banks of the Sava and the Danube, so the rivers read as dark ribbons edged in light
@@ -386,11 +410,19 @@ void main(){
     vec2 rc = vF / 6.5 + seed * 31.; float lodr = smoothstep(.2, .7, max(fwidth(rc.x), fwidth(rc.y)));
     float k = mix(1. - .3 * hash12(floor(rc)) + .25 * hash12(floor(rc * .37)), .98, lodr);
     col = vec3(.0080, .0100, .0150) * tone * k + vec3(.015, .019, .029) * edge;
-    if (type > 7.5) col = vec3(1., .9, .76) * .08; else if (type > 6.5) col *= .6;
+    if (type > 9.5) col = vec3(1., .72, .42) * (.16 + .12 * edge); // Kalemegdan: lit wall tops
+    else if (type > 8.5) col = vec3(.85, .93, 1.) * .9;                // Ada bridge pylon top
+    else if (type > 7.5) col = vec3(1., .93, .8) * (.42 + .3 * edge);  // Hram: floodlit dome and roofs
+    else if (type > 6.5) col *= .6;
     if (type > 3.5 && type < 4.5) col += vec3(1., .66, .3) * (uSava * (.04 + .2 * edge) + .02 * edge);
     col += FRONT * min(band, 1.6) * 2.6 + BRASS * min(soft, 1.3) * .42 + ember(min(tail, 1.1)) * .034;
     col += BRASS * uShop.z * .04 / (1. + dShop * dShop / 2500.);
-  } else if (type > 7.5) { col = vec3(1., .9, .76) * (.05 + .05 * smoothstep(0., 70., vW.y)) * (.75 + .25 * abs(vN.x)); } // Hram Svetog Save, floodlit
+  } else if (type > 9.5) { // Kalemegdan: old stone walls washed in warm floodlight from below
+    float up = smoothstep(0., 16., vW.y); float course = .85 + .15 * step(.5, fract(vW.y * .45));
+    col = vec3(1., .66, .34) * (.34 - .18 * up) * course * (.8 + .2 * abs(vN.x));
+  } else if (type > 8.5) { // Ada bridge pylon: cool white light all the way up
+    col = vec3(.82, .91, 1.) * (.55 + .35 * smoothstep(0., 200., vW.y)) * (.75 + .25 * abs(vN.z));
+  } else if (type > 7.5) { col = vec3(1., .92, .78) * (.36 + .34 * smoothstep(0., 70., vW.y)) * (.72 + .28 * abs(vN.x)); } // Hram Svetog Save, floodlit
   else if (type > 6.5) { waves(vW.xz, 0., band, soft, tail); col = vec3(.0042, .0044, .005) * tone + FRONT * band * 2. + BRASS * soft * .3; }
   else { // ---- facade
     float bay = 3.3, fh = 2.9, mx = .2, y0 = .36, y1 = .8;
@@ -678,6 +710,8 @@ void main(){ float a; vec3 c = vec3(.957, .918, .847);
     const BOT = { a: 600, b: 600 };
     const lLyra = ui.text('talas.lyra', { size: 29, font: 'textMed', color: INK });
     const lSava = ui.text('talas.sava', { size: 29, font: 'textMed', color: INK });
+    // Belgrade landmarks across the river: small, quiet labels so visitors recognise the city
+    const LMK = [['talas.ada', 3045, 214, 2905], ['talas.hram', 6430, 86, 2610], ['talas.kalemegdan', 4900, 26, -210]].map(([k, x, y, z]) => ({ T: ui.text(k, { size: 25, font: 'textMed', color: '#d9ccb4' }), x, y, z }));
     const CSZ = 62;
     const cInt = Array.from({ length: 12 }, (_, i) => ui.text(String(i), { size: CSZ, font: 'display', color: INK, align: 'right', valign: 'baseline' }));
     const cDec = Array.from({ length: 10 }, (_, i) => ui.text(',' + i, { size: CSZ, font: 'display', color: INK, align: 'left', valign: 'baseline' }));
@@ -931,6 +965,20 @@ void main(){ float a; vec3 c = vec3(.957, .918, .847);
         cInt.forEach((T, i) => { T.alpha = i === ci && aF ? cA : 0; T.x = cx0; T.y = cy0; T.show(T.alpha > 0 ? 1 : 0, { style: 'fade' }); });
         cDec.forEach((T, i) => { T.alpha = i === cd && aF ? cA : 0; T.x = cx0; T.y = cy0; T.show(T.alpha > 0 ? 1 : 0, { style: 'fade' }); });
         cUnit.alpha = aF ? cA : 0; cUnit.x = cx0 + decW + 7; cUnit.y = cy0; cUnit.show(cUnit.alpha > 0 ? 1 : 0, { style: 'fade' });
+        // landmark labels: after the wave has arrived (beat 0) and in beat 1; only where they fit cleanly, never forced
+        const kLm = Math.max(smoothstep(ARRIVE + .6, ARRIVE + 2.2, tW) * (1 - kb), s.k(1, 1.2, 2.6, 'outCubic'));
+        for (const L of LMK) {
+          const a = project(L.x, L.y, L.z), T = L.T; T._sync();
+          if (kLm < .01 || !onScr(a)) { T.alpha = 0; T.show(0, { style: 'fade', by: 'line' }); continue; }
+          const P = place(a, T.width, T.height, ['ul', 'ur', 'dl', 'dr'], avoid, 12, 22);
+          const r = [P.x - 10, P.y - 8, T.width + 20, T.height + 16];
+          if (!inSafe([P.x, P.y, T.width, T.height]) || avoid.some(q => hitR(r, q))) { T.alpha = 0; T.show(0, { style: 'fade', by: 'line' }); continue; }
+          T.x = P.x; T.y = P.y; T.alpha = kLm * .92; T.show(1, { style: 'fade', by: 'line' });
+          oPlate(P.x, P.y, T.width, T.height, .42 * kLm);
+          const dx = P.ex - a.x, dy = P.ey - a.y, l = Math.hypot(dx, dy) || 1;
+          oLine(a.x + dx / l * 8, a.y + dy / l * 8, P.ex, P.ey, kLm * .4); oRing(a.x, a.y, 4.5, kLm * .6);
+          avoid.push(r);
+        }
         oGeo.attributes.position.needsUpdate = true; oGeo.attributes.aD.needsUpdate = true; oGeo.setDrawRange(0, oN * 6);
       },
 

@@ -21,7 +21,7 @@ export const scenes_sr = {
   'talas.b1.h': 'Zvuk prelazi 343 metra u sekundi.',
   'talas.b1.p': 'Od naših vrata do Sava Centra stigne za oko jedanaest sekundi.',
   'talas.hint': 'Klikni bilo gde i pusti talas.', 'talas.hintTouch': 'Dodirni bilo gde i pusti talas.',
-  'talas.lyra': 'Lyra Style', 'talas.sava': 'Sava Centar', 'talas.sec': '{n} s',
+  'talas.lyra': 'Lyra Style', 'talas.sava': 'Sava Centar', 'talas.sec': '{n} s', 'talas.ada': 'Most na Adi', 'talas.hram': 'Hram Svetog Save', 'talas.kalemegdan': 'Kalemegdan',
   'talas.b2.h': 'Da se čuje do poslednjeg reda.',
   'talas.b2.p': 'Mikrofoni, miksete, zvučnici, studio. Naši sistemi rade u restoranima, ambasadama i studijima. I svuda gde\u00a0sviraš.',
 
@@ -62,7 +62,7 @@ export const scenes_en = {
   'talas.b1.h': 'Sound travels 343 metres a second.',
   'talas.b1.p': 'From our door it reaches Sava Centar in about eleven seconds.',
   'talas.hint': 'Click anywhere to send a wave.', 'talas.hintTouch': 'Tap anywhere to send a wave.',
-  'talas.lyra': 'Lyra Style', 'talas.sava': 'Sava Centar', 'talas.sec': '{n} s',
+  'talas.lyra': 'Lyra Style', 'talas.sava': 'Sava Centar', 'talas.sec': '{n} s', 'talas.ada': 'Ada Bridge', 'talas.hram': 'Church of Saint Sava', 'talas.kalemegdan': 'Kalemegdan Fortress',
   'talas.b2.h': 'Heard all the way to the back row.',
   'talas.b2.p': 'Microphones, mixers, speakers, studio gear. Our systems run in restaurants, embassies and studios. And wherever you\u00a0play.',
 

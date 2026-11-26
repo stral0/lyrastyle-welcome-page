@@ -1,0 +1,26 @@
+{
+  "name": "lyrastyle-welcome-page",
+  "version": "1.0.0",
+  "description": "Lyra Style – „Tvoj zvuk počinje ovde“: WebGL uvodna stranica (brend iskustvo) za lyrastyle.rs",
+  "scripts": {
+    "build": "node tools/build.js",
+    "build:dev": "node tools/build.js --dev",
+    "check": "node tools/build.js && node tools/check.js",
+    "thumbs": "node tools/build.js && node tools/bake-thumbs.js && node tools/build.js"
+  },
+  "keywords": [
+    "lyra style",
+    "webgl",
+    "three.js"
+  ],
+  "author": "",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/instrument-sans": "^5.3.0",
+    "esbuild": "^0.28.2",
+    "playwright-core": "^1.65.1",
+    "three": "^0.187.0"
+  },
+  "private": true
+}

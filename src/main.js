@@ -1,0 +1,11 @@
+import { boot } from './engine/deck.js';
+import { transitions } from './engine/transitions.js';
+import { copy } from './copy.js';
+import { products } from './products.js';
+import { site } from './site.js';
+import { thumbs } from './thumbs.js';
+import zica from './scenes/zica.js';
+import ploca from './scenes/ploca.js';
+import talas from './scenes/talas.js';
+import sazvezdje from './scenes/sazvezdje.js';
+boot({ scenes: [zica, ploca, talas, sazvezdje], transitions, copy, products, site, thumbs });

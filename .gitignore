@@ -2,5 +2,8 @@ node_modules/
 shots/
 dist/*
 !dist/index.html
+!dist/nova-godina/
 *.log
 .DS_Store
+nova-godina/dist/
+nova-godina/shots/

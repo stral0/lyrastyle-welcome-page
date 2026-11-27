@@ -4,7 +4,14 @@ Interaktivna uvodna stranica (brend iskustvo) za **[lyrastyle.rs](https://lyrast
 
 Ovo nije zamena za postojeću prodavnicu. To je kratka priča u nekoliko scena: žica koju posetilac povuče, ploča sa peskom, zvučni talas preko Novog Beograda i sazvežđe Lira. Na kraju posetilac ide pravo u prodavnicu ili dolazi u radnju.
 
-**Pogledaj uživo:** https://claude.ai/artifact/8brHL4SVAjgLikWgYaZ29w
+Postoje **dve verzije**, istog oblika i iste navigacije, koje se mogu menjati po sezoni:
+
+| Verzija | Fajl | Kada |
+|---|---|---|
+| **Osnovna** – „Tvoj zvuk počinje ovde“ | [`lyra-style.html`](lyra-style.html) | cele godine |
+| **Novogodišnja** – sa Deda Mrazom, saonicama, snegom i pahuljama | [`lyra-style-nova-godina.html`](lyra-style-nova-godina.html) | praznična sezona (preporuka ispod) |
+
+**Pogledaj osnovnu verziju uživo:** https://claude.ai/artifact/8brHL4SVAjgLikWgYaZ29w
 
 ![Ulazni ekran](docs/screenshots/01-ulaz.jpg)
 
@@ -13,14 +20,15 @@ Ovo nije zamena za postojeću prodavnicu. To je kratka priča u nekoliko scena: 
 ## Sadržaj
 
 1. [Šta je u repozitorijumu](#šta-je-u-repozitorijumu)
-2. [Gde postaviti na sajt (preporuka)](#gde-postaviti-na-sajt-preporuka)
-3. [Kako postaviti, korak po korak](#kako-postaviti-korak-po-korak)
-4. [Kako se koristi](#kako-se-koristi)
-5. [Linkovi direktno na scene](#linkovi-direktno-na-scene)
-6. [Šta treba potvrditi pre objave](#šta-treba-potvrditi-pre-objave)
-7. [Izmene teksta i ponovni build](#izmene-teksta-i-ponovni-build)
-8. [Tehnički detalji](#tehnički-detalji)
-9. [Preporuke za postojeći sajt (SEO)](#preporuke-za-postojeći-sajt-seo)
+2. [Novogodišnja verzija](#novogodišnja-verzija)
+3. [Gde postaviti na sajt (preporuka)](#gde-postaviti-na-sajt-preporuka)
+4. [Kako postaviti, korak po korak](#kako-postaviti-korak-po-korak)
+5. [Kako se koristi](#kako-se-koristi)
+6. [Linkovi direktno na scene](#linkovi-direktno-na-scene)
+7. [Šta treba potvrditi pre objave](#šta-treba-potvrditi-pre-objave)
+8. [Izmene teksta i ponovni build](#izmene-teksta-i-ponovni-build)
+9. [Tehnički detalji](#tehnički-detalji)
+10. [Preporuke za postojeći sajt (SEO)](#preporuke-za-postojeći-sajt-seo)
 
 ---
 
@@ -28,8 +36,12 @@ Ovo nije zamena za postojeću prodavnicu. To je kratka priča u nekoliko scena: 
 
 | Putanja | Šta je |
 |---|---|
-| **`lyra-style.html`** | **Gotova stranica. Jedan fajl (~1,6 MB) koji se postavlja na sajt.** Sve je u njemu: grafika, fontovi, zvuk, tekstovi na srpskom i engleskom. Ne učitava ništa sa interneta. |
+| **`lyra-style.html`** | **Gotova stranica, osnovna verzija. Jedan fajl (~1,6 MB) koji se postavlja na sajt.** Sve je u njemu: grafika, fontovi, zvuk, tekstovi na srpskom i engleskom. Ne učitava ništa sa interneta. |
 | `dist/index.html` | Ista stranica kao gornja, pod imenom pogodnim za postavljanje u folder. |
+| **`lyra-style-nova-godina.html`** | **Gotova stranica, novogodišnja verzija (~1,8 MB).** Takođe samostalna, bez ijednog spoljnog zahteva. |
+| `dist/nova-godina/index.html` | Ista novogodišnja stranica, pod imenom za postavljanje u folder. |
+| `nova-godina/` | Izvorni kod novogodišnje verzije (`src/`, `tools/`, `XMAS.md` – umetnički brief). |
+| `docs/screenshots/nova-godina/` | Snimci ekrana novogodišnje verzije. |
 | `src/` | Izvorni kod: scene, engine, tekstovi (`src/copy.js`, `src/copy.scenes.js`), proizvodi (`src/products.js`), podaci o radnji (`src/site.js`). |
 | `tools/` | Alati za build (`build.js`), automatsku proveru (`check.js`), snimke ekrana i sličice za pregled. |
 | `docs/screenshots/` | Snimci ekrana svih scena. |
@@ -37,7 +49,65 @@ Ovo nije zamena za postojeću prodavnicu. To je kratka priča u nekoliko scena: 
 | `docs/razvoj/` | Tehnički ugovor između delova koda i uputstvo za razvoj (na engleskom). |
 | `docs/logo.svg` | Logo pretvoren u vektor (koristi se u stranici). |
 
-## Scene
+## Novogodišnja verzija
+
+Ista priča u četiri scene, samo u novogodišnjoj noći u Beogradu. **Deda Mraz** je izvođač: prikazan je kao silueta u kontra-svetlu sa zlatnim obrisom (kao kadar iz filma, a ne crtani lik). Kroz sve scene lagano pada sneg.
+
+| | Scena | Šta je drugačije |
+|---|---|---|
+| 1 | **Žica** | Deda Mraz u snopu svetla prstom okida žicu; kod lire priđe i pređe rukom preko svih sedam žica, sa žica se otresa sneg; u klaviru batići sviraju početak „Jingle Bells“. |
+| 2 | **Ploča** | Okrugla bronzana ploča; posle svakog udarca pesak se složi u **pahuljicu sa šest krakova** (pet različitih), uz zvuk udarenog bronzanog diska i praporaca. |
+| 3 | **Talas** | Saonice sa osam irvasa lete preko Beograda; spuste se iznad radnje, praporci zazvone, padnu zlatne iskre i odatle kreće zvučni talas do Sava Centra. Inje na krovovima. |
+| 4 | **Sazvežđe** | Saonice prolete pored sazvežđa Lira i nestanu u Vegi; završni ekran: „Srećna Nova godina. Dođi da čuješ uživo.“ |
+
+| | |
+|---|---|
+| ![Ulaz](docs/screenshots/nova-godina/01-ulaz.jpg) | ![Deda Mraz i žica](docs/screenshots/nova-godina/02-deda-mraz-zica.jpg) |
+| ![Lira](docs/screenshots/nova-godina/03-lira.jpg) | ![Pahulja](docs/screenshots/nova-godina/04-pahulja.jpg) |
+| ![Saonice iznad Beograda](docs/screenshots/nova-godina/05-saonice-beograd.jpg) | ![Srećna Nova godina](docs/screenshots/nova-godina/06-srecna-nova-godina.jpg) |
+
+**Promenjeni tekstovi u odnosu na osnovnu verziju:** naslov ploče („Svaka pahulja ima svoj oblik.“), tekst talasa („Kad Deda Mraz zazvoni iznad naših vrata, Sava Centar ga čuje za oko jedanaest sekundi.“), opis sazvežđa, završni ekran („Srećna Nova godina.“) i poruka učitavanja („Kitimo jelku…“). Ostalo je isto.
+
+### Kada koristiti koju verziju
+
+Preporuka: **ista adresa, sezonska zamena fajla**. Posetioci i QR kodovi uvek vode na `lyrastyle.rs/prica/`, a na serveru se samo zameni fajl:
+
+| Period | Fajl na `/prica/index.html` |
+|---|---|
+| od ~1. decembra do 14. januara (srpska Nova godina) | novogodišnja verzija (`dist/nova-godina/index.html`) |
+| ostatak godine | osnovna verzija (`dist/index.html`) |
+
+Linkovi direktno na scene (`#zica`, `#ploca-2`, `#sazvezdje-2`, …) imaju ista imena u obe verzije, pa postojeći linkovi i QR kodovi rade i posle zamene.
+
+### Kako zameniti verziju na serveru
+
+1. U hosting panelu ili FTP-u otvoriti folder `public_html/prica/`.
+2. Postojeći `index.html` preimenovati u `index-osnovna.html` (rezervna kopija).
+3. Postaviti `dist/nova-godina/index.html` iz ovog repozitorijuma kao novi `index.html`.
+4. Otvoriti `https://lyrastyle.rs/prica/` i proveriti. Ako se prikazuje stara verzija, osvežiti stranicu (Ctrl+F5) ili sačekati da istekne keš (do sat vremena, ako je podešen kao u primeru ispod).
+5. Posle praznika obrnuti postupak: vratiti `index-osnovna.html` pod imenom `index.html`.
+
+**Alternativa:** obe verzije istovremeno, na dve adrese (npr. `/prica/` i `/nova-godina/`), pa u praznično vreme baner na početnoj strani voditi na `/nova-godina/`.
+
+### Na šta obratiti pažnju
+
+- Novogodišnja verzija je **zahtevnija za grafiku** (sneg, silueta, saonice). Testirana je automatski na 15 veličina ekrana (od 360×640 do 3440×1440), ali u pregledaču bez grafičke kartice. **Pre objave je pogledati na jednom običnom laptopu i jednom telefonu, sa zvukom.**
+- Radno vreme za praznike **nije** u stranici. Ako radnja radi drugačije oko praznika, to treba dodati u `nova-godina/src/copy.scenes.js` (ključ `sazvezdje.b3.p`) i ponovo napraviti fajl.
+- Proizvodi i cene u sazvežđu su isti kao u osnovnoj verziji (stanje od 26. 11. 2026).
+
+### Izmene i build novogodišnje verzije
+
+```bash
+npm install                 # jednom, u korenu repozitorijuma
+npm run build:nova          # pravi nova-godina/dist/index.html
+npm run check:nova          # build + automatska provera (navigacija, swipe, kamera na 15 ekrana)
+```
+
+Tekstovi: `nova-godina/src/copy.scenes.js` i `nova-godina/src/copy.js`. Posle izmene napraviti fajl i postaviti `nova-godina/dist/index.html` na server (umesto `dist/nova-godina/index.html`).
+
+---
+
+## Scene (osnovna verzija)
 
 | | Scena | Šta posetilac vidi i radi |
 |---|---|---|
@@ -220,6 +290,8 @@ Gde se šta menja:
 | Naslov i opis stranice (za Google i deljenje) | `src/index.template.html` |
 
 Posle izmene: `npm run build`, pa ponovo postaviti `dist/index.html` na server.
+
+Za novogodišnju verziju isti fajlovi su u `nova-godina/src/`, a build je `npm run build:nova` (vidi [Novogodišnja verzija](#novogodišnja-verzija)).
 
 **Napomene za tekst:**
 

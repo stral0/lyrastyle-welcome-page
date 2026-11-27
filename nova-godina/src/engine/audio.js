@@ -826,7 +826,7 @@ export function createAudio(opts) {
   let muted = dead ? true : !(opts && opts.muted === false);
   let kicked = false, suspendTimer = 0, muteTimer = 0, warmTimer = 0;
   const want = { room: 0, air: 0, sub: 0, shimmer: 0, hum: 0 }, sent = {}, bedTimers = {}, params = {}, paramSent = {};
-  let flushTimer = 0, lastFlush = 0;
+  let flushTimer = 0, lastFlush = 0, onLive = null;
   const warmQueue = [];
   const safe = fn => { try { return fn(); } catch (e) { return undefined; } };
   const later = (fn, ms) => (typeof setTimeout === 'function' ? setTimeout(fn, ms) : 0);
@@ -883,6 +883,7 @@ export function createAudio(opts) {
     for (const k in sent) delete sent[k];
     for (const n in G.beds) sent[n] = -1;
     safe(() => G.setMaster(true, false)); flush();
+    if (onLive) { const f = onLive; safe(() => f()); }
   }
 
   function unlock() {
@@ -927,6 +928,8 @@ export function createAudio(opts) {
   const api = {
     unlock, setMuted,
     get muted() { return muted; },
+    get live() { return live(); },                                        // sound wanted AND the browser lets it play
+    set onLive(f) { onLive = typeof f === 'function' ? f : null; },          // called each time sound becomes audible
     get ctx() { return ac; },
     now() { return ac ? ac.currentTime : 0; },
     pluck(freq, o) { if (live()) return void safe(() => G.string(freq, o || {})); },

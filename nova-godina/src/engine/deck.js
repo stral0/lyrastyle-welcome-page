@@ -130,7 +130,7 @@ export async function boot({ scenes, transitions, copy, products, thumbs = {}, s
     canvas.setAttribute('aria-label', t('ui.canvas'));
     bOver.textContent = t('ui.overview'); bLang.textContent = lang === 'sr' ? 'EN' : 'SR';
     bLang.setAttribute('aria-label', t('ui.langSwitch'));
-    bSnd.textContent = audio.muted ? t('ui.soundOn') : t('ui.soundOff'); bSnd.removeAttribute('aria-pressed'); // the label names the action (turn sound on / mute), so no pressed state
+    bSnd.textContent = (audio.muted || (started && !audio.live)) ? t('ui.soundOn') : t('ui.soundOff'); bSnd.classList.toggle('blocked', !audio.muted && started && !audio.live); bSnd.removeAttribute('aria-pressed'); // the label names the action (turn sound on / mute), so no pressed state
     aShop.textContent = t('ui.shop');
     bPrev.setAttribute('aria-label', t('ui.prev')); bNext.setAttribute('aria-label', t('ui.next')); rail.setAttribute('aria-label', t('ui.progress')); over.setAttribute('aria-label', t('ui.overview')); help.setAttribute('aria-label', t('help.title'));
     hint.textContent = t(view.touch ? 'ui.hintTouch' : 'ui.hint');
@@ -341,7 +341,7 @@ export async function boot({ scenes, transitions, copy, products, thumbs = {}, s
   over.addEventListener('keydown', trap); help.addEventListener('keydown', trap);
 
   function toggleLang() { lang = lang === 'sr' ? 'en' : 'sr'; try { localStorage.setItem('lyra-lang', lang); } catch (e) { /* ignore */ } relabel(); if (cur) announce(); }
-  function toggleMute() { audio.setMuted(!audio.muted); relabel(); say(audio.muted ? t('ui.soundOffSay') : t('ui.soundOnSay')); }
+  function toggleMute() { if (!audio.muted && !audio.live) { audio.unlock(); return; } audio.setMuted(!audio.muted); relabel(); say(audio.muted ? t('ui.soundOffSay') : t('ui.soundOnSay')); }
   bOver.addEventListener('click', openOver); bLang.addEventListener('click', toggleLang); bSnd.addEventListener('click', toggleMute);
   bNext.addEventListener('click', () => request(1)); bPrev.addEventListener('click', () => request(-1));
   mark.addEventListener('click', e => { e.preventDefault(); goto(scenes[0].id, 0); });
@@ -537,7 +537,11 @@ export async function boot({ scenes, transitions, copy, products, thumbs = {}, s
     armWheel(); if (!headless) enteredAt = performance.now(); pendingStep = 0; // the gesture that opens the gate (and its inertia tail) is spent: it never also steps
     gate.classList.add('gone'); setTimeout(() => gate.remove(), 2000);
     chromeEls.forEach(e => { e.inert = false; }); document.body.classList.add('started'); relabel(); canvas.focus({ preventScroll: true }); wake();
-    if (withSound && !headless) setTimeout(() => say(t(view.touch ? 'ui.soundEnter' : 'ui.soundEnterKey'), 2400), 900);
+    if (withSound && !headless) setTimeout(() => {
+      if (audio.muted) return;
+      if (audio.live) say(t(view.touch ? 'ui.soundEnter' : 'ui.soundEnterKey'), 2400);
+      else { soundPrompt = true; relabel(); say(t(view.touch ? 'ui.soundTap' : 'ui.soundClick'), 6000); }
+    }, 700);
   };
   // the gate is the first page: logo, name, bar, one line, then a quiet "swipe / scroll" cue. Any forward gesture enters, with sound.
   const gGo = gate.querySelector('.gate-go-t');
@@ -550,6 +554,7 @@ export async function boot({ scenes, transitions, copy, products, thumbs = {}, s
   const enter = () => begin(true);
   let gy = null;
   gate.addEventListener('pointerdown', e => { gy = e.clientY; audio.unlock(); });
+  gate.addEventListener('touchend', () => { audio.unlock(); }, { passive: true }); // iOS: the gesture that may open audio is touchend
   gate.addEventListener('pointerup', e => { const dy = gy == null ? 0 : gy - e.clientY; gy = null; if (dy > 30 || Math.abs(dy) < 10) enter(); });
   gate.addEventListener('wheel', e => { if (gate.classList.contains('gone')) return; if (Math.abs(wheelDelta(e)) > 8) enter(); }, { passive: true }); // either direction
   gate.addEventListener('keydown', e => { if (['ArrowDown', 'ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); e.stopPropagation(); audio.unlock(); enter(); } });
@@ -559,6 +564,13 @@ export async function boot({ scenes, transitions, copy, products, thumbs = {}, s
   let chromeN = 0, sdt = 0, last = performance.now(), slow = 0, fast = 0, snapKey = '', lost = false, acc = 0;
   canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); lost = true; say(t('ui.lost')); });
   canvas.addEventListener('webglcontextrestored', () => { location.reload(); });
+  let soundPrompt = false;
+  for (const ev of ['pointerdown', 'pointerup', 'touchend', 'keydown', 'click']) window.addEventListener(ev, () => { if (started && !audio.muted && !audio.live) audio.unlock(); }, true);
+  audio.onLive = () => {
+    relabel();
+    if (soundPrompt) { soundPrompt = false; say(t('ui.soundOnSay'), 1600); }
+    if (started && cur && !tr && cur.inst.audioReady) { try { cur.inst.audioReady(cur.s); } catch (e) { /* cosmetic */ } }
+  };
   let mutedByHide = false;
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { if (!audio.muted) { mutedByHide = true; audio.setMuted(true); } }
@@ -648,6 +660,7 @@ export async function boot({ scenes, transitions, copy, products, thumbs = {}, s
 
   // test / bake hooks
   window.__lyra = {
+    audioState: () => ({ muted: audio.muted, live: audio.live, state: audio.ctx ? audio.ctx.state : 'none' }), _audio: audio,
     goto: (id, beat, done) => { const sc = byId[id]; if (!sc) return false; if (cur !== sc) { cur.inst.exit && cur.inst.exit(cur.s); cur = sc; sc.s.t = 0; setBeat(sc, beat || 0, done); sc.inst.enter && sc.inst.enter(sc.s); } else setBeat(sc, beat || 0, done); tr = null; announce(); parkIdle(); return true; },
     targets: () => live_.map(sc => sc.desc.id + ':' + (sc.targets || []).filter(rt => rt.userData && rt.userData.samples > 0).map(rt => gfx.parked(rt) ? 'parked' : 'live').join(',')).join(' '),
     seek: sec => { cur.s.bt = sec; cur.s._since[cur.s.beat] = sec; cur.s.p[cur.s.beat] = clamp(sec / cur.desc.beats[cur.s.beat].dur); },

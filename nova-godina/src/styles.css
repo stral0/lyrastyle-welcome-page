@@ -175,3 +175,7 @@ body.chrome-hidden #ui::before{opacity:0}
 @keyframes sheetIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (max-width:640px){.over-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem .8rem}.card .cap{font-size:.86rem}}
 @media (prefers-reduced-motion:reduce){.rail.bump,.rail.bump-l,.step.bump{animation:none}.gate-chev,.gate.touch .gate-chev{animation:none}}
+
+.tool.blocked{color:var(--paper);box-shadow:0 0 0 1px rgba(216,165,72,.55);animation:sndPulse 2.2s ease-in-out infinite}
+@keyframes sndPulse{0%,100%{box-shadow:0 0 0 1px rgba(216,165,72,.55)}50%{box-shadow:0 0 0 5px rgba(216,165,72,.12)}}
+@media (prefers-reduced-motion:reduce){.tool.blocked{animation:none}}

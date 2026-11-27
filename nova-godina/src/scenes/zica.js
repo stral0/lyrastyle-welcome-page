@@ -1241,6 +1241,11 @@ export default {
         resetAll(); touched = false; hintA = 0; santa.reset();
         ctx.audio.layer('room', .4); ctx.audio.layer('air', .12);
       },
+      audioReady(s) { // sound just became audible (the first click/tap after a silent entry): let Santa's string be heard now
+        // only if he has already played in silence; otherwise his own pluck is about to come, with sound
+        if (s.beat === 0 && s.at(0) > tPl(0) + .1) { auto = true; pluck(hero, .016, SX0, true, .75); auto = false; }
+        else if (s.beat === 1 && s.at(1) > tGl(0) + .1) { auto = true; lyre.forEach(st => { pluck(st, .008, .5, true, .35); }); auto = false; }
+      },
       exit() { for (const st of lyre) { st.held = false; st.santa = false; st.pull = st.pullT = 0; } ctx.audio.layer('room', 0); ctx.audio.layer('air', 0); },
       resize() { k3 = 1; mcache.clear(); },
       update,
